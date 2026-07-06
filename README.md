@@ -55,10 +55,25 @@ make test
 ```
 
 The suite drives all four endpoints end-to-end through FastAPI's TestClient
-against a temporary database, building its Excel fixtures in-memory. The
-attached Excel files in `test_files/` are ready-made for manual uploads via
-Swagger; each one documents an edge case (multi-sheet sums, numeric-looking
-text, search-term boundaries).
+against a temporary database, building its Excel fixtures in-memory.
+
+### Test files
+
+The attached Excel files in `test_files/` are ready-made for manual uploads
+via Swagger; each one exercises a different edge case:
+
+File | Numeric sum | What it demonstrates
+--- | --- | ---
+`sales_report.xlsx` | 700.0 | Multi-sheet workbook (Q1 + Q2) — **all** sheets count toward a file's sum
+`tricky_types.xlsx` | 30.0 | Text that looks numeric (`"123"`, `"456"`), booleans — only cells Excel types as numeric are summed
+`city_offices.xlsx` | 59.0 | Search-term material — terms mid-cell (`"New York"`), numeric cells searchable via their text form (`42`), and adjacent cells `a1` \| `2b` proving `"1,2"` never matches across a cell boundary
+
+### Manual testing
+
+`docs/MANUAL_TESTING.md` is a step-by-step checklist that exercises every
+endpoint and edge case by hand with `curl` (or the Swagger UI), using the
+files above — expected status codes and response bodies included. Useful for
+verifying behavior in a real running server rather than through TestClient.
 
 ## Future development
 
