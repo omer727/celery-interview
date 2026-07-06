@@ -30,6 +30,12 @@ def test_upload_valid_xlsx_returns_201_with_sheet_count(client, make_xlsx):
     assert body["sheets"] == 2
 
 
+def test_upload_category_lookup_is_case_insensitive(client, make_xlsx):
+    client.post("/categories", json={"name": "Sales", "region": "EMEA", "type": "sales"})
+    resp = upload(client, "SALES", make_xlsx({"S1": [["a", 1]]}))
+    assert resp.status_code == 201
+
+
 def test_upload_to_unknown_category_returns_404(client, make_xlsx):
     data = make_xlsx({"S1": [["a", 1]]})
     resp = upload(client, "NoSuchCategory", data)

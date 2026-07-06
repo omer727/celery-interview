@@ -2,6 +2,9 @@
 
 Assignment endpoint mapping (ADR 0006: RESTful URLs over the spec's RPC names):
   create_category -> POST /categories
+  upload_file     -> POST /categories/{name}/files
+  sum_type        -> GET /sum?type=
+  find_regions    -> GET /regions?search_term=
 """
 
 import sqlite3

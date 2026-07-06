@@ -5,7 +5,9 @@ for a schema this small, the queries themselves are the clearest documentation
 of what the API does.
 """
 
+import contextlib
 import sqlite3
+from collections.abc import Iterator
 
 # Design decision (ADR 0004): COLLATE NOCASE makes name uniqueness and type
 # matching case-insensitive at the schema level, so no query has to remember
@@ -40,9 +42,20 @@ CREATE TABLE IF NOT EXISTS sheets (
 """
 
 
-def connect(db_path: str) -> sqlite3.Connection:
-    """Open a connection, ensuring the schema exists (idempotent)."""
+@contextlib.contextmanager
+def connect(db_path: str) -> Iterator[sqlite3.Connection]:
+    """Open a connection, ensuring the schema exists (idempotent).
+
+    Used as `with db.connect(path) as conn:` — the block is one transaction
+    (commit on success, rollback on exception, as sqlite3's own context
+    manager does) and the connection is always closed afterwards, which
+    sqlite3's context manager alone does not do.
+    """
     conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
-    conn.executescript(SCHEMA)
-    return conn
+    try:
+        conn.row_factory = sqlite3.Row
+        conn.executescript(SCHEMA)
+        with conn:
+            yield conn
+    finally:
+        conn.close()
