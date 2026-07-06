@@ -24,7 +24,7 @@ curl "$B/sum?type=SALES"            # case-insensitive type; expect the known fi
 curl "$B/regions?search_term=york"  # substring, case-insensitive
 ```
 
-Fixture sums (from make_test_files.py): sales_report=700.0, tricky_types=30.0, city_offices=59.0.
+Fixture sums: sales_report=700.0, tricky_types=30.0, city_offices=59.0.
 
 Probes that matter: duplicate name in different casing → 409; upload garbage bytes → 400; unknown category → 404; `search_term=1,2` after uploading city_offices → `[]` (no cross-cell match); empty `search_term` → 422; restart the server and re-query to confirm SQLite persistence.
 

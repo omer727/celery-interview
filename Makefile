@@ -3,7 +3,7 @@
 
 VENV := .venv/bin
 
-.PHONY: install run test files clean help
+.PHONY: install run test clean help
 
 help:  ## show available tasks
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | awk -F ':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -17,9 +17,6 @@ run:  ## start the API with auto-reload (Swagger at http://127.0.0.1:8000/docs)
 
 test:  ## run the test suite
 	$(VENV)/python -m pytest
-
-files:  ## regenerate the test .xlsx files in test_files/
-	$(VENV)/python make_test_files.py
 
 clean:  ## remove the local database (fresh demo state)
 	rm -f data.db

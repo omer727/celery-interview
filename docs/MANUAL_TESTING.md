@@ -2,7 +2,7 @@
 
 A step-by-step checklist for exercising every endpoint and documented edge
 case by hand, either via the Swagger UI (`/docs`) or `curl`. Uses the fixture
-files in `test_files/` (see `make_test_files.py` for what each one contains).
+files in `test_files/`.
 
 ## Setup
 
